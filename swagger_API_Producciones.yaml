@@ -1,0 +1,237 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Producciones API
+  description: API para gestionar producciones de películas y series
+
+basePath: /api/v1
+
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+
+paths:
+  /producciones:
+    get:
+      summary: Obtiene todas las producciones
+      description: Permite obtener todas las producciones, filtrarlas por tipo (pelicula o serie) y ordenarlas alfabéticamente o por calificación
+      produces:
+        - application/json
+      parameters:
+        - name: tipo
+          in: query
+          description: Tipo de producción (pelicula o serie)
+          required: false
+          type: string
+        - name: orden
+          in: query
+          description: Orden de las producciones (alfabetico o calificacion)
+          required: false
+          type: string
+      responses:
+        200:
+          description: Producciones obtenidas exitosamente
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Produccion'
+        401:
+          $ref: '#/responses/Unauthorized'
+        500:
+          $ref: '#/responses/InternalServerError'
+
+  /producciones/{id}:
+    get:
+      summary: Obtiene una producción por su id
+      description: Permite obtener una producción por su id
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: Id de la producción
+          required: true
+          type: integer
+      responses:
+        200:
+          description: Producción obtenida exitosamente
+          schema:
+            $ref: '#/definitions/Produccion'
+        401:
+          $ref: '#/responses/Unauthorized'
+        404:
+          $ref: '#/responses/NotFound'
+        500:
+          $ref: '#/responses/InternalServerError'
+
+    put:
+      summary: Actualiza una producción por su id
+      description: Permite actualizar una producción por su id
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: Id de la producción
+          required: true
+          type: integer
+        - name: Produccion
+          in: body
+          description: Campos de la producción a actualizar
+          required: true
+          schema:
+            $ref: '#/definitions/ProduccionInput'
+      responses:
+        200:
+          description: Producción actualizada exitosamente
+          schema:
+            $ref: '#/definitions/Produccion'
+        401:
+          $ref: '#/responses/Unauthorized'
+        403:
+          $ref: '#/responses/Forbidden'
+        404:
+          $ref: '#/responses/NotFound'
+        422:
+          $ref: '#/responses/UnprocessableEntity'
+        500:
+          $ref: '#/responses/InternalServerError'
+
+    delete:
+      summary: Elimina una producción.
+      description: Elimina la producción con el ID especificado.
+      tags:
+        - Produccion
+      parameters:
+        - in: path
+          name: id
+          description: ID de la producción a eliminar.
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Producción eliminada exitosamente.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Mensaje de éxito.
+        400:
+          description: Petición mal formada.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensaje de error.
+        403:
+          description: No se tienen los permisos necesarios para eliminar la producción.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensaje de error.
+        404:
+          description: La producción con el ID especificado no existe.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensaje de error.
+        500:
+          description: Error interno del servidor.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Mensaje de error.
+      
+      /calificaciones/{id}:
+  put:
+    summary: Calificar producción
+    tags:
+      - calificaciones
+    parameters:
+      - in: path
+        name: id
+        required: true
+        description: ID de la producción a calificar
+        schema:
+          type: integer
+      - in: query
+        name: calificacion
+        required: true
+        description: Calificación numérica entre 1 y 5
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 5
+    responses:
+      200:
+        description: Éxito en la calificación de la producción
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  description: true si la operación se realizó correctamente
+      400:
+        description: Petición incorrecta
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+                  description: Mensaje de error
+      403:
+        description: Acceso no autorizado
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+                  description: Mensaje de error
+      404:
+        description: Producción no encontrada
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+                  description: Mensaje de error
+      500:
+        description: Error interno del servidor
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+                  description: Mensaje de error
+

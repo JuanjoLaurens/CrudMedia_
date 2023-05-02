@@ -1,0 +1,120 @@
+paths:
+  /usuarios:
+    get:
+      summary: Obtener lista de usuarios
+      description: Retorna una lista de usuarios.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Usuario'
+    post:
+      summary: Crear un usuario
+      description: Crea un nuevo usuario.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '422':
+          description: Entidad no procesable
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: object
+    /usuarios/{id}:
+      get:
+        summary: Obtener un usuario por ID
+        description: Retorna un usuario específico.
+        parameters:
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: integer
+            description: ID del usuario a buscar.
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Usuario'
+          '404':
+            description: No encontrado
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+      put:
+        summary: Actualizar un usuario por ID
+        description: Actualiza un usuario específico.
+        parameters:
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: integer
+            description: ID del usuario a actualizar.
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Usuario'
+          '422':
+            description: Entidad no procesable
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errors:
+                      type: object
+      delete:
+        summary: Eliminar un usuario por ID
+        description: Elimina un usuario específico.
+        parameters:
+          - in: path
+            name: id
+            required: true
+            schema:
+              type: integer
+            description: ID del usuario a eliminar.
+        responses:
+          '204':
+            description: Sin contenido
+          '404':
+            description: No encontrado
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
